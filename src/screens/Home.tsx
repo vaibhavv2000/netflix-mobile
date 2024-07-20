@@ -1,12 +1,13 @@
-import AuthWrapper from "../HOC/Wrapper";
 import {createBottomTabNavigator} from "@react-navigation/bottom-tabs";
+import AuthWrapper from "../HOC/Wrapper";
 import Feed from "./Feed";
-import {MaterialIcons} from '@expo/vector-icons';
 import Search from "./Search";
 import Upload from "./Upload";
-import {Foundation} from "@expo/vector-icons";
 import MyList from "./MyList";
+import {Foundation} from "@expo/vector-icons";
 import {EvilIcons} from "@expo/vector-icons";
+import {MaterialIcons} from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 const Tab = createBottomTabNavigator();
 
@@ -23,17 +24,16 @@ const Home = (): JSX.Element => {
      borderTopWidth: 0,
      height: 60,
     },
-    tabBarLabelStyle: {color: "#fff",fontFamily: "Inter_700Bold",marginTop: -8,marginBottom: 5},
+    tabBarLabelStyle: {color: "#fff",fontFamily: "Inter_500Medium",marginTop: -8,marginBottom: 5},
    }}
   >
    <Tab.Screen
     name="Feed"
     component={Feed}
     options={{
-     tabBarIcon: ({focused}) =>
-      !focused ? <Foundation name="home" size={24} color="#777" /> : 
-     <Foundation name="home" size={27} color={"#fff"} />
-     ,
+     tabBarIcon: ({focused}) => (
+      <MaterialIcons name="rss-feed" size={focused ? 28 : 24} color={focused ? "#fff" : "#777"} />
+     )
     }}
    />
    <Tab.Screen
@@ -41,7 +41,7 @@ const Home = (): JSX.Element => {
     component={Search}
     options={{
      tabBarIcon: ({focused}) => (
-      <EvilIcons name="search" size={focused ? 32 : 28} color={focused ? "#fff" : "#777"} />
+      <MaterialCommunityIcons name="movie-search" size={focused ? 28 : 24} color={focused ? "#fff" : "#777"} />
      ),
     }}
    />
@@ -50,7 +50,7 @@ const Home = (): JSX.Element => {
     component={Upload}
     options={{
      tabBarIcon: ({focused}) => (
-      <MaterialIcons name="file-upload" size={focused ? 30 : 26} color={focused ? "#fff" : "#777"} />
+      <MaterialCommunityIcons name="movie-filter-outline" size={focused ? 28 : 24} color={focused ? "#fff" : "#777"} />
      ),
     }}
    />
@@ -59,7 +59,7 @@ const Home = (): JSX.Element => {
     component={MyList}
     options={{
      tabBarIcon: ({focused}) => (
-      !focused ? <EvilIcons name="heart" size={28} color="#777" /> : <Foundation name="heart" size={22} color="#fff" />
+      <MaterialIcons name="local-movies" size={focused ? 28 : 24} color={focused ? "#fff" : "#777"} />
      ),
     }}
    />

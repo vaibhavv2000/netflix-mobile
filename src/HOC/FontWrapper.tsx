@@ -12,7 +12,6 @@ import {
 } from "@expo-google-fonts/inter";
 import {ActivityIndicator,View} from "react-native";
 import {Fragment,ReactNode} from "react";
-
 import {AppDispatch} from "../redux/store";
 import {useEffect} from "react";
 import {useDispatch} from "react-redux";
@@ -40,7 +39,7 @@ const FontWrapper = ({children}: {children: ReactNode}): JSX.Element => {
     const user = await SecureStore.getItemAsync("netflix-user");
     if(user) dispatch(login(JSON.parse(user)));
    } catch(error) {
-    throw new Error();
+    throw new Error("Some Error Occurred");
    };
   };
 

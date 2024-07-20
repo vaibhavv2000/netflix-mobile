@@ -9,8 +9,8 @@ import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 const url = "https://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4";
 
 interface props {
- toggleScreen: any;
  isFullScreen: boolean;
+ toggleScreen: (opt: "vert" | "horiz") => Promise<void>;
 };
 
 const Player = ({toggleScreen,isFullScreen}: props) => {
@@ -71,10 +71,9 @@ const Player = ({toggleScreen,isFullScreen}: props) => {
    />
    <View className="absolute top-0 left-0 h-full w-full">
     <View className="flex-1 justify-center items-center z-50">
-     <TouchableOpacity onPress={handlePlay} className="h-8 w-8 justify-center items-center">
+     <TouchableOpacity onPress={handlePlay} className="h-8 w-8 justify-center items-center mt-12">
      {!isPlaying ? <FontAwesome name="play" size={24} color={"#fff"} /> : 
-      <MaterialCommunityIcons name="pause" size={32} color={"#fff"} />
-     }
+      <MaterialCommunityIcons name="pause" size={32} color={"#fff"} />}
      </TouchableOpacity>
     </View>
     <View className="flex-row items-center px-6 space-x-2 py-4 z-50">
@@ -95,7 +94,7 @@ const Player = ({toggleScreen,isFullScreen}: props) => {
      </Text>
      <SimpleLineIcons
       name={isFullScreen ? "size-actual" : "size-fullscreen"}
-      size={18}
+      size={isFullScreen ? 18 : 16}
       color="#fff"
       onPress={() => toggleScreen(isFullScreen ? "vert" : "horiz")}
      />

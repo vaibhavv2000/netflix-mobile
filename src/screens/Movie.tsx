@@ -34,7 +34,8 @@ const Movie = (): JSX.Element => {
     .then(() => false);
     return false;
    } else {
-    navigation.goBack();
+    setIsFullScreen(false);
+    // navigation.goBack();
     return true;
    };
   };
@@ -45,14 +46,6 @@ const Movie = (): JSX.Element => {
    backHandler.remove(); 
   };
  },[]);
-
- useEffect(() => {
-  // navigation.addListener("beforeRemove",(e) => {
-  //  if(isFullScreen) return e.preventDefault();
-  //  else return true;
-  // })
-  // console.log({isFullScreen})
- }, [navigation,isFullScreen]);
   
  const {id} = useRoute().params as {id: number};
  const {moviesList,myList} = useSelector((state: RootState) => state.movie);
@@ -68,9 +61,7 @@ const Movie = (): JSX.Element => {
   if(list_movie) setIsAdded(true);
   else setIsAdded(false);
 
-  let m = [...moviesList];
-
-  setRandomMovies(m.sort((a,b) => Math.random() - 0.5).slice(0,5));
+  setRandomMovies([...moviesList].sort((a,b) => Math.random() - 0.5).slice(0,5));
  }, []);
 
  const handleMovie = async (like = false,id: number) => {
@@ -97,14 +88,15 @@ const Movie = (): JSX.Element => {
   };
  };
 
- if(isFullScreen) return <Player isFullScreen={isFullScreen} toggleScreen={changeScreenOrientation} />
-
  return (
-  <ScrollView className="flex-1 bg-black pt-7" contentContainerStyle={{paddingBottom: 24}}>
+  <ScrollView 
+   className={`pt-${isFullScreen?"0":"7"}`} 
+   contentContainerStyle={{paddingBottom: isFullScreen ? 0 : 24, backgroundColor: isFullScreen ? "transparent" : "black", flexGrow: 1}}
+  >
    <StatusBar style="light" hidden={isFullScreen} backgroundColor="#111" />
    <Fragment>
     <Player isFullScreen={isFullScreen} toggleScreen={changeScreenOrientation} />
-    <View className="p-2 space-y-1.5">
+    {!isFullScreen && <View className="p-2 space-y-1.5">
      <View className="flex-row items-center justify-between">
       <Text className="text-xl font-inter_600 text-white">
        {movie?.movie_name}
@@ -159,11 +151,11 @@ const Movie = (): JSX.Element => {
      <Text className="font-inter_500 text-white/80">
       {movie?.description}
      </Text>
-    </View>
+    </View>}
    </Fragment>
-   <View>
-    {randomMovies?.map((item) => <Recommended item={item} key={String(item.id)} />)}
-   </View>
+   {!isFullScreen && <View>
+    {randomMovies?.map((item) => <Recommended item={item} key={`random-${item.id}`} />)}
+   </View>}
   </ScrollView>
  );
 };
