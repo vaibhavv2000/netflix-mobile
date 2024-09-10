@@ -1,11 +1,10 @@
 import axios from "axios";
 import * as SecureStore from 'expo-secure-store';
 
-let URL = 'https://netflix-next-pearl.vercel.app/';
-let dev = "http://192.168.57.174:3000";
+let URL = 'https://netflix-next-pearl.vercel.app';
 
 export const API = axios.create({
- baseURL: `${dev}/api`,
+ baseURL: `${URL}/api`,
  headers: {
   'Content-Type': 'application/json',
  },
