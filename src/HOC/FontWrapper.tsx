@@ -11,14 +11,14 @@ import {
  Inter_900Black,
 } from "@expo-google-fonts/inter";
 import {ActivityIndicator,View} from "react-native";
-import {Fragment,ReactNode} from "react";
-import {AppDispatch} from "../redux/store";
+import type {ReactNode} from "react";
 import {useEffect} from "react";
-import {useDispatch} from "react-redux";
 import * as SecureStore from "expo-secure-store";
-import {login} from "../redux/slices/userSlice";
+import {login} from "../redux/userSlice";
+import {API} from "../lib/API";
+import {useAppDispatch} from "../lib/redux";
 
-const FontWrapper = ({children}: {children: ReactNode}): JSX.Element => {
+const FontWrapper = ({children}: {children: ReactNode})=> {
  const [fontsLoaded] = useFonts({
   Inter_100Thin,
   Inter_200ExtraLight,
@@ -31,15 +31,18 @@ const FontWrapper = ({children}: {children: ReactNode}): JSX.Element => {
   Inter_900Black,
  });
 
- const dispatch: AppDispatch = useDispatch();
+ const dispatch = useAppDispatch();
 
  useEffect(() => {
   const checkAuth = async () => {
    try {
-    const user = await SecureStore.getItemAsync("netflix-user");
-    if(user) dispatch(login(JSON.parse(user)));
+    const token = await SecureStore.getItemAsync("netflix-token");
+    if(!token) return;
+
+    const res = await API.get(`/auth/checkauth`);
+    dispatch(login(res.data));
    } catch(error) {
-    throw new Error("Some Error Occurred");
+    SecureStore.deleteItemAsync("netflix-token");
    };
   };
 
@@ -54,7 +57,7 @@ const FontWrapper = ({children}: {children: ReactNode}): JSX.Element => {
   );
  };
 
- return <Fragment>{children}</Fragment>;
+ return children;
 };
 
 export default FontWrapper;

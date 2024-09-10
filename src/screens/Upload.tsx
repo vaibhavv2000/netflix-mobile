@@ -10,13 +10,13 @@ import {
  ToastAndroid,
 } from "react-native";
 import {FontAwesome} from "@expo/vector-icons";
-import {API} from "../utils/API";
+import {API} from "../lib/API";
 
-let input = "text-white/90 p-2.5 bg-white/20 rounded-sm font-inter_500 mt-1";
+let input = "text-white/90 p-2.5 bg-white/20 rounded-sm font-inter/500 mt-1";
 
-let text = "text-white/90 font-inter_400 text-[12px]";
+let text = "text-white/90 font-inter/400 text-[12px]";
 
-const Upload = (): JSX.Element => {
+const Upload = () => {
  const [movie,setMovie] = useState({
   thumbnail: "",
   rating: 0,
@@ -60,7 +60,7 @@ const Upload = (): JSX.Element => {
    await API.post("/movie/addmovie",{movie});
    ToastAndroid.show("Movie upload successfully",ToastAndroid.LONG);
   } catch(error: any) {
-   setError(error.response.data.message);
+   setError(error?.response?.data?.message);
   };
  };
 
@@ -75,7 +75,7 @@ const Upload = (): JSX.Element => {
     showsVerticalScrollIndicator={false}
    >
     <StatusBar style="light" backgroundColor="#111" />
-    <Text className="text-2xl font-inter_600 text-white/80">Movie upload</Text>
+    <Text className="text-2xl font-inter/600 text-white/80">Movie upload</Text>
     <View>
      <Text className={text}>Movie Name</Text>
      <TextInput
@@ -150,7 +150,7 @@ const Upload = (): JSX.Element => {
       className="flex-row justify-between items-center my-1 bg-white/10 p-2.5"
       onPress={() => setShowPg(!showPg)}
      >
-      <Text className="font-inter_700 text-white text-[13px]">
+      <Text className="font-inter/700 text-white text-[13px]">
         {movie.pg ? "Yes" : "No"}
       </Text>
       <FontAwesome
@@ -161,7 +161,7 @@ const Upload = (): JSX.Element => {
      </TouchableOpacity>
      {showPg && (<View>
       <Text
-       className="text-white font-inter_600 p-2 py-3 bg-white/30 border-b border-black"
+       className="text-white font-inter/600 p-2 py-3 bg-white/30 border-b border-black"
        onPress={() => {
         handleChange(true,"pg");
         setShowPg(false);
@@ -170,7 +170,7 @@ const Upload = (): JSX.Element => {
        Yes
       </Text>
       <Text
-       className="text-white font-inter_600 p-2 py-3 bg-white/30"
+       className="text-white font-inter/600 p-2 py-3 bg-white/30"
        onPress={() => {
         handleChange(false,"pg");
         setShowPg(false);
@@ -187,7 +187,7 @@ const Upload = (): JSX.Element => {
       className="flex-row justify-between items-center my-1 bg-white/10 p-2.5"
       onPress={() => setShowType(!showType)}
      >
-      <Text className="font-inter_700 text-white text-[13px]">
+      <Text className="font-inter/700 text-white text-[13px]">
        {movie.type || "Select"}
       </Text>
       <FontAwesome
@@ -202,7 +202,7 @@ const Upload = (): JSX.Element => {
       {["animation","movie","web-series"].map((type) => (
       <Text
        key={`key-${type}`}
-       className="text-white font-inter_600 p-2 py-3 bg-white/30 border-b border-black capitalize"
+       className="text-white font-inter/600 p-2 py-3 bg-white/30 border-b border-black capitalize"
        onPress={() => {
         handleChange(type,"type");
         setShowType(false);
@@ -216,7 +216,7 @@ const Upload = (): JSX.Element => {
     </View>
     {error && (
     <View>
-     <Text className="font-inter_600 text-red-600">{error}</Text>
+     <Text className="font-inter/600 text-red-600">{error}</Text>
     </View>
     )}
     <View className="flex-row justify-end">
@@ -225,7 +225,7 @@ const Upload = (): JSX.Element => {
       activeOpacity={0.4}
       onPress={upload}
      >
-      <Text className="text-white text-center font-inter_600">Upload</Text>
+      <Text className="text-white text-center font-inter/600">Upload</Text>
      </TouchableOpacity>
     </View>
    </ScrollView>

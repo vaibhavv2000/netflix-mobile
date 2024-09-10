@@ -10,7 +10,7 @@ const url = "https://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4";
 
 interface props {
  isFullScreen: boolean;
- toggleScreen: (opt: "vert" | "horiz") => Promise<void>;
+ toggleScreen: (option: "vertical" | "horizontal") => Promise<void>;
 };
 
 const Player = ({toggleScreen,isFullScreen}: props) => {
@@ -34,8 +34,8 @@ const Player = ({toggleScreen,isFullScreen}: props) => {
   setDuration(`${totalMin}:${totalSec}`);
  };
 
- const getProgress = (cT: number,tT: number) => {
-  let progress = (cT / tT) * 100;
+ const getProgress = (curentTime: number,totalTime: number) => {
+  let progress = (curentTime / totalTime) * 100;
   setProgress(progress);
  };
 
@@ -77,7 +77,7 @@ const Player = ({toggleScreen,isFullScreen}: props) => {
      </TouchableOpacity>
     </View>
     <View className="flex-row items-center px-6 space-x-2 py-4 z-50">
-     <Text className="text-white font-inter_400 text-[12px]">
+     <Text className="text-white font-inter/400 text-[12px]">
       {currentTime}
      </Text>
      <Slider
@@ -89,14 +89,14 @@ const Player = ({toggleScreen,isFullScreen}: props) => {
       maximumTrackTintColor="#999"
       thumbTintColor="red"
      />
-     <Text className="text-white font-inter_400 text-[12px] mr-3">
+     <Text className="text-white font-inter/400 text-[12px] mr-3">
       {duration}
      </Text>
      <SimpleLineIcons
       name={isFullScreen ? "size-actual" : "size-fullscreen"}
       size={isFullScreen ? 18 : 16}
       color="#fff"
-      onPress={() => toggleScreen(isFullScreen ? "vert" : "horiz")}
+      onPress={() => toggleScreen(isFullScreen ? "vertical" : "horizontal")}
      />
     </View>
    </View>

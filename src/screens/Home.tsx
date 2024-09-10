@@ -3,21 +3,19 @@ import AuthWrapper from "../HOC/Wrapper";
 import Feed from "./Feed";
 import Search from "./Search";
 import Upload from "./Upload";
-import MyList from "./MyList";
-import {Foundation} from "@expo/vector-icons";
-import {EvilIcons} from "@expo/vector-icons";
+import MyList from "./Wishlist";
 import {MaterialIcons} from '@expo/vector-icons';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import {MaterialCommunityIcons} from '@expo/vector-icons';
 
 const Tab = createBottomTabNavigator();
 
-const Home = (): JSX.Element => {
+const Home = () => {
  return (
   <Tab.Navigator
    screenOptions={{
     headerShown: false,
     tabBarStyle: {
-     backgroundColor: "black",
+     backgroundColor: "#181818",
      borderWidth: 0,
      borderColor: "#111",
      shadowColor: "#111",
@@ -33,7 +31,8 @@ const Home = (): JSX.Element => {
     options={{
      tabBarIcon: ({focused}) => (
       <MaterialIcons name="rss-feed" size={focused ? 28 : 24} color={focused ? "#fff" : "#777"} />
-     )
+     ),
+     tabBarLabelStyle: {display: "none"}
     }}
    />
    <Tab.Screen
@@ -43,6 +42,7 @@ const Home = (): JSX.Element => {
      tabBarIcon: ({focused}) => (
       <MaterialCommunityIcons name="movie-search" size={focused ? 28 : 24} color={focused ? "#fff" : "#777"} />
      ),
+     tabBarLabelStyle: {display: "none"}
     }}
    />
    <Tab.Screen
@@ -52,6 +52,7 @@ const Home = (): JSX.Element => {
      tabBarIcon: ({focused}) => (
       <MaterialCommunityIcons name="movie-filter-outline" size={focused ? 28 : 24} color={focused ? "#fff" : "#777"} />
      ),
+    tabBarLabelStyle: {display: "none"} 
     }}
    />
    <Tab.Screen
@@ -61,6 +62,7 @@ const Home = (): JSX.Element => {
      tabBarIcon: ({focused}) => (
       <MaterialIcons name="local-movies" size={focused ? 28 : 24} color={focused ? "#fff" : "#777"} />
      ),
+     tabBarLabelStyle: {display: "none"} 
     }}
    />
   </Tab.Navigator>

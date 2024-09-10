@@ -4,14 +4,13 @@ import Login from "../screens/Login";
 import Register from "../screens/Register";
 import Home from "../screens/Home";
 import Movie from "../screens/Movie";
-import {useSelector} from "react-redux";
-import {RootState} from "../redux/store";
 import {GestureHandlerRootView} from "react-native-gesture-handler";
+import {useAppSelector} from "../lib/redux";
 
 const Stack = createNativeStackNavigator();
  
 const Navigator = () => {
- const {isAuth} = useSelector((state: RootState) => state.user);
+ const isAuth = useAppSelector(state => state.user.user.id) > 0;
 
  return (
   <GestureHandlerRootView className="flex-1">

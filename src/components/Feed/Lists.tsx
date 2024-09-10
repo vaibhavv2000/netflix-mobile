@@ -1,42 +1,33 @@
 import {useState,useEffect} from "react";
-import {View,Text,FlatList,Pressable} from "react-native";
-import {useSelector} from "react-redux";
-import {RootState} from "../../redux/store";
-import {movie} from "./Featured";
-import {Gesture,GestureDetector} from "react-native-gesture-handler";
-import Animated,{useAnimatedStyle,useSharedValue} from "react-native-reanimated";
-import {useNavigation} from "@react-navigation/native";
-import {LinearGradient} from "expo-linear-gradient";
+import {View,Text,FlatList} from "react-native";
+import type {movie} from "../../utils/types";
+import {useAppSelector} from "../../lib/redux";
+import Movie from "./Movie";
 
 interface props {
  title: string;
 };
 
-const Lists = (props: props): JSX.Element => {
- const [movies,setMovies] = useState<movie[]>([]);
+const Lists = (props: props) => {
  const {title} = props;
- const {moviesList, myList} = useSelector((state: RootState) => state.movie);
+ const [list,setList] = useState<movie[]>([]);
+ const {movies} = useAppSelector(state => state.movie);
+ const {wishlist} = useAppSelector(state => state.user.user);
 
  useEffect(() => {
-  if(title === "My List") return;
-  const random_Movies = [...moviesList].sort((a,b) => Math.random() - 0.5);
-  setMovies(random_Movies);
- }, [moviesList]);
-
- useEffect(() => {
-  if(title === "My List") setMovies([...myList]);
- }, [myList]);
+  setList([...movies].sort(() => Math.random() - 0.5));
+ }, []);
 
  return (
   <View className="bg-black">
-   <Text className="text-white text-lg font-inter_600 pl-1 my-3">
+   <Text className="text-white text-xl font-inter/600 pl-1 my-2 mt-4">
     {title}
    </Text>
    <FlatList
     // className="px-8 gap-4"
-    data={movies}
-    extraData={movies}
-    keyExtractor={(item,index) => `random_movie-${index}`}
+    data={list}
+    extraData={[list, movies, wishlist]}
+    keyExtractor={(_,index) => `random_movie-${index}`}
     renderItem={({item}) => <Movie movie={item} />}
     horizontal
     scrollEnabled
@@ -46,37 +37,3 @@ const Lists = (props: props): JSX.Element => {
 };
 
 export default Lists;
-
-interface prop {
- movie: movie;
-};
-
-function Movie({movie}: prop) {
- const opacity = useSharedValue(1);
- const position = useSharedValue({x: 0,y: 0});
-
- const {navigate} = useNavigation();
-
- const movieStyles = useAnimatedStyle(() => ({
-  opacity: opacity.value,
-  transform: [{translateX: position.value.x},{translateY: position.value.y}],
- }));
-
- const Drag = Gesture.LongPress();
-
- return (
-  // @ts-ignore
-  <Pressable onPress={() =>  navigate(`Movie`,{id: movie.id})}>
-   <GestureDetector gesture={Drag}>
-    <Animated.Image
-     source={{uri: movie.thumbnail}}
-     style={[{height: 240,width: 160,margin: 4,borderRadius: 6},movieStyles]}
-    />
-   </GestureDetector>
-   <LinearGradient
-    colors={["rgba(0,0,0,0.1111)","rgba(0,0,0,0.222)"]}
-    className="absolute top-0 left-0 w-full h-full"
-   ></LinearGradient>
-  </Pressable>
- );
-};

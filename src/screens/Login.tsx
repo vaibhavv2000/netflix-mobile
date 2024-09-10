@@ -11,23 +11,22 @@ import {
 import {Ionicons} from "@expo/vector-icons";
 import {Link,useNavigation} from "@react-navigation/native";
 import {useMutation} from "@tanstack/react-query";
-import {API} from "../utils/API";
-import {AppDispatch} from "../redux/store";
-import {useDispatch} from "react-redux";
-import {login} from "../redux/slices/userSlice";
+import {API} from "../lib/API";
+import {login} from "../redux/userSlice";
 import * as SecureStore from "expo-secure-store";
 import NotAuthWrapper from "../HOC/Wrapper";
+import {useAppDispatch} from "../lib/redux";
+import {user} from "../utils/types";
+import {validateEmail} from "../utils/emailValidator";
 
-const Login = (): JSX.Element => {
- const [email,setEmail] = useState<string>("");
- const [password,setPassword] = useState<string>("");
- const [error,setError] = useState<string>("");
- const [pwd,setPwd] = useState<boolean>(false);
+const Login = () => {
+ const [email,setEmail] = useState("");
+ const [password,setPassword] = useState("");
+ const [error,setError] = useState("");
+ const [showPassword,setShowPassword] = useState(false);
 
- const dispatch: AppDispatch = useDispatch();
+ const dispatch = useAppDispatch();
  const navigation = useNavigation();
-
- type user = {email: string; password: string};
 
  useEffect(() => {
   if(error) setTimeout(() => setError(""),5000);
@@ -38,26 +37,26 @@ const Login = (): JSX.Element => {
    const res = await API.post("/auth/login",user);
    return res.data;
   },
-  onSuccess: async (user: any) => {
-   const name = user.name;
-   dispatch(login({email,name}));
-   await SecureStore.setItemAsync("netflix-user", JSON.stringify({email,name}));
+  onSuccess: async ({user, token}: {user: user, token: string}) => {
+   dispatch(login(user));
+   await SecureStore.setItemAsync("netflix-token", token);
    navigation.navigate("Home" as never);
   },
-  onError: (error: any) => setError(error.response.data.message),
+  onError: (error: any) => setError(error?.response?.data?.message),
  });
 
  const handleLogin = async () => {
-  if(!password || !email) return setError("All fields are required");
-  if(password.length < 6) return setError("Password must be atleast 6 characters");
+  if(!password.trim() || !email.trim()) return setError("All fields are required");
+  if(password.length < 8) return setError("Password must be atleast 8 characters");
+  if(!validateEmail(email)) return setError("Email is Invalid");
 
-  mutate({email,password});
+  mutate({email,password} as any);
  };
 
  return (
   <View className="flex-1 bg-red-600">
    <ImageBackground
-    source={{ uri: "https://ceotudent.com/wp-content/uploads/2020/05/netflix-poster.jpg",}}
+    source={require("../../assets/Images/Cover.jpg")}
     className="h-full w-full justify-center items-center"
     resizeMethod="scale"
    >
@@ -65,7 +64,7 @@ const Login = (): JSX.Element => {
      className="w-[90%] py-7 flex-col space-y-3 items-center"
      style={{backgroundColor: "rgba(0,0,0,0.7)", maxWidth: 380}}
     >
-     <Text className="text-5xl text-red-500 text-center font-inter_500 mb-3">
+     <Text className="text-4xl text-red-500 w-full px-4 font-inter/500 mb-3">
       Login
      </Text>
      <TextInput
@@ -73,53 +72,53 @@ const Login = (): JSX.Element => {
       cursorColor={"#c4c2c2"}
       onChangeText={(text: string) => setEmail(text)}
       autoCapitalize="none"
-      className="p-3 py-2.5 my-1 mt-3 bg-white font-inter_400 text-[16px] w-[90%]"
+      className="p-3 my-1 mt-3 bg-white font-inter/400 text-[14px] w-[90%]"
      />
-     <View className="w-[90%] relative">
+     <View className="w-[90%] relative my-2">
       <TextInput
        placeholder="Password"
-       secureTextEntry={pwd ? false : true}
+       secureTextEntry={showPassword ? false : true}
        autoCapitalize="none"
        cursorColor={"#c4c2c2"}
        onChangeText={(text: string) => setPassword(text)}
-       className="p-3 py-2.5 pr-11 bg-white font-inter_400 text-[16px] w-full"
+       className="p-3 pr-11 bg-white font-inter/400 text-[14px] w-full"
       />
       <View className="absolute right-0 top-0 justify-center items-center w-10 h-full">
        <Ionicons
-        name={!pwd ? "eye" : "eye-off"}
+        name={!showPassword ? "eye" : "eye-off"}
         size={24}
         color="#666"
-        onPress={() => setPwd(!pwd)}
+        onPress={() => setShowPassword(prev => !prev)}
        />
       </View>
      </View>
-     {error && <Text className="text-red-500 w-[90%] font-inter_500">{error}</Text>}
+     {error && <Text className="text-red-500 w-[90%] font-inter/500">{error}</Text>}
      {Platform.OS === "android" ? (
       <Pressable
-       className="p-3 rounded-full bg-red-500 w-[90%]"
+       className="p-4 bg-red-500 w-[90%]"
        android_ripple={{color: "#ffffffc5"}}
        onPress={handleLogin}
       >
-       <Text className="font-inter_700 text-[16px] text-center text-white">
+       <Text className="font-inter/700 text-[14px] text-center text-white">
         Login
        </Text>
       </Pressable>
       ) : (
       <TouchableOpacity
-       className="p-3 bg-red-500 w-[90%] rounded-full"
+       className="p-4 bg-red-500 w-[90%]"
        activeOpacity={0.8}
        onPress={handleLogin}
       >
-       <Text className="font-inter_700 text-[16px] text-center text-white">
+       <Text className="font-inter/700 text-[14px] text-center text-white">
         Login
        </Text>
       </TouchableOpacity>
       )}
-     <View className="w-[90%] -my-2 text-white justify-center flex-row items-center gap-2">
-      <Text className="text-white font-inter_400">
+     <View className="w-[90%] -my-2 justify-center flex-row items-center gap-2">
+      <Text className="text-white/80 font-inter/400">
        Don't Have an Account?
       </Text>
-      <Text className="underline text-red-500">
+      <Text className="underline text-red-500 text-[16px]">
        <Link to={"/Register"}>Register</Link>
       </Text>
      </View>

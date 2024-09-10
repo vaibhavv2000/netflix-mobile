@@ -1,39 +1,32 @@
 import {StatusBar} from "expo-status-bar";
 import {View,ScrollView} from "react-native";
 import Featured from "../components/Feed/Featured";
-import {API} from "../utils/API";
+import {API} from "../lib/API";
 import {useEffect} from "react";
 import Lists from "../components/Feed/Lists";
-import {AppDispatch,RootState} from "../redux/store";
-import {useDispatch,useSelector} from "react-redux";
-import {addMovies,addToMyList} from "../redux/slices/movieSlice";
+import {addMovies} from "../redux/movieSlice";
+import {useAppDispatch, useAppSelector} from "../lib/redux";
+import {useNavigation} from "@react-navigation/native";
 
-let lists = ["Featured Movies","New Releases","Popular Movies","Horror Thriller","Comedy Movies", "My List"];
+let lists = ["Featured Movies","New Releases","Popular Movies","Horror Thriller","Comedy Movies"];
 
-const Feed = (): JSX.Element => {
- const dispatch: AppDispatch = useDispatch();
- const {email} = useSelector((state: RootState) => state.user.user);
-
- const movies = useSelector((state: RootState) => state.movie.moviesList);
+const Feed = () => {
+ const {movies} = useAppSelector(state => state.movie);
+ const dispatch = useAppDispatch();
+ const {navigate} = useNavigation();
 
  useEffect(() => {
-  const fetchData = async () => {
+  async function fetcher() {
    try {
-    const res = await API.get(`/movie/movies`);
-    const movies = await res.data;
-
-    const res1 = await API.get(`/movie/getlist?email=${email}`);
-    const wishlist = await res1.data;
-
-    dispatch(addMovies(movies));
-    dispatch(addToMyList(wishlist));
+    let {data} = await API.get(`/movie/movies`);
+    dispatch(addMovies(data));
    } catch(error: any) {
-    console.log(error.response.data);
+    navigate("/" as never);
    };
   };
-
-  fetchData();
- }, []);
+  
+  if(movies.length < 1) fetcher();
+ },[movies]);
 
 
  if(!movies.length) return <View className="flex-1 bg-black"></View>
@@ -43,7 +36,7 @@ const Feed = (): JSX.Element => {
    <StatusBar backgroundColor="transparent" style="light" />
    <ScrollView>
     <Featured />
-    {lists.map((item: string,i: number) => <Lists title={item} key={`list-${i}`} />)}
+    {lists.map((item: string,index: number) => <Lists title={item} key={`list-${index}`} />)}
    </ScrollView>
   </View>
  );
